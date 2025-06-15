@@ -1,10 +1,24 @@
 <script setup>
 import '../../src/assets/base.css'
+import { RegiserService, LoginService } from '../api/LoginAnRegist'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import Massage from '@/utils/Massage'
+
+const router = useRouter()
+const NowLogin = ref(true)
 const formData = ref({
   username: '',
   password: '',
   rememberMe: false
+})
+
+const RegisterFormData = ref({
+  telephoneNumber: '',
+  identity: 'teacher',
+  password: '',
+  id: '',
+  repassword: ''
 })
 const formDataRef = ref(null)
 const rules = ref({
@@ -19,20 +33,78 @@ const rules = ref({
       trigger: 'blur'
     }
   ],
+  repassword: [
+    { required: true, message: '请再次输入密码', trigger: 'blur' },
+    {
+      validator: (rule, value, callback) => {
+        if (value === RegisterFormData.value.password) {
+          callback() // 校验通过，不传递参数
+        } else {
+          callback(new Error('两次密码不一致')) // 校验失败，传递错误信息
+        }
+      },
+      trigger: ['blur', 'change'] // 失去焦点或值变化时触发校验
+    }
+  ],
+  telephoneNumber: [
+    { required: true, message: '手机号不能为空', trigger: 'blur' },
+
+    {
+      pattern: /^1[3456789]\d{9}$/,
+      message: '请输入正确的手机号',
+      trigger: 'blur'
+    },
+    { min: 11, max: 11, message: '长度为 11 个字符', trigger: 'blur' }
+  ],
+  id: [{ required: true, message: '学号/工号不能为空', trigger: 'blur' }],
   username: [
     { required: true, message: '昵称不能为空', trigger: 'blur' },
     { min: 1, max: 15, message: '长度在 1到 15 个字符', trigger: 'blur' }
   ]
 })
+
+// 注册
+const HandleRegisterandLogin = () => {
+  NowLogin.value = !NowLogin.value
+}
+const HandleRegister = async () => {
+  let data = {
+    telephoneNumber: RegisterFormData.value.telephoneNumber,
+    identity: RegisterFormData.value.identity,
+    password: RegisterFormData.value.password,
+    id: RegisterFormData.value.id
+  }
+  let res = await RegiserService(data)
+  if (res.code == 1) {
+    Massage.success(res.message)
+    NowLogin.value = !NowLogin.value
+  }
+}
+// 注册
+//登录
+const HandleLogin = async () => {
+  let data = {
+    id: formData.value.id,
+    password: formData.value.password
+  }
+  let res = await LoginService(data)
+  if (res.code == 1) {
+    Massage.success(res.message)
+    router.push('/home')
+  }
+}
 </script>
 
 <template>
   <div class="login-page">
     <div class="header">
       <div class="inner-header flex">
-        <div class="login">
+        <div class="login" v-if="NowLogin">
+          <div class="registerBtn" @click="HandleRegisterandLogin">
+            立即注册
+          </div>
           <div class="title">
-            <h1>Sign In</h1>
+            <h1>登 &nbsp;录</h1>
             <p>Sign in to continue to your account</p>
           </div>
           <div class="formBox">
@@ -42,11 +114,11 @@ const rules = ref({
               ref="formDataRef"
               class="form"
             >
-              <el-form-item prop="username">
+              <el-form-item prop="id">
                 <el-input
                   class="login-input"
-                  v-model="formData.username"
-                  placeholder="Username"
+                  v-model="formData.id"
+                  placeholder="工号/学号"
                 ></el-input>
               </el-form-item>
               <el-form-item prop="password">
@@ -55,7 +127,7 @@ const rules = ref({
                   v-model="formData.password"
                   type="password"
                   show-password
-                  placeholder="Password"
+                  placeholder="密码"
                 ></el-input>
               </el-form-item>
               <el-form-item style="margin-top: -10px">
@@ -67,8 +139,66 @@ const rules = ref({
                 >
                 <span class="forgetpassword">忘记密码？</span>
               </el-form-item>
-              <el-button round style="width: 6.8rem; height: 2.5rem"
+              <el-button
+                round
+                style="width: 6.8rem; height: 2.5rem"
+                @click="HandleLogin"
                 >登&nbsp;&nbsp;&nbsp;录</el-button
+              >
+            </el-form>
+          </div>
+        </div>
+
+        <div class="register" v-if="!NowLogin">
+          <div class="LoginBtn" @click="HandleRegisterandLogin">立即登录</div>
+          <div class="title">
+            <h1>注 &nbsp; 册</h1>
+          </div>
+          <div class="RegisterformBox">
+            <el-form
+              :model="RegisterFormData"
+              :rules="rules"
+              ref="formDataRef"
+              class="form"
+            >
+              <el-form-item prop="id">
+                <el-input
+                  class="login-input"
+                  v-model="RegisterFormData.id"
+                  placeholder="工号"
+                ></el-input>
+              </el-form-item>
+              <el-form-item prop="telephoneNumber">
+                <el-input
+                  class="login-input"
+                  v-model="RegisterFormData.telephoneNumber"
+                  placeholder="电话号码"
+                ></el-input>
+              </el-form-item>
+              <el-form-item prop="password">
+                <el-input
+                  class="login-input"
+                  v-model="RegisterFormData.password"
+                  type="password"
+                  show-password
+                  placeholder="密码"
+                ></el-input>
+              </el-form-item>
+              <el-form-item prop="repassword">
+                <el-input
+                  class="login-input"
+                  v-model="RegisterFormData.repassword"
+                  type="password"
+                  show-password
+                  placeholder="再次输入密码"
+                ></el-input>
+              </el-form-item>
+              <el-form-item style="margin-top: -10px"> </el-form-item>
+              <el-button
+                round
+                style="width: 6.8rem; height: 2.5rem"
+                @click="HandleRegister"
+                >注&nbsp;&nbsp;&nbsp;册</el-button
               >
             </el-form>
           </div>
@@ -118,7 +248,8 @@ const rules = ref({
 </template>
 
 <style lang="scss" scoped>
-.login {
+.login,
+.register {
   margin-top: 6rem;
   width: 25rem;
   height: 30rem;
@@ -140,10 +271,29 @@ const rules = ref({
   position: absolute;
   top: 0;
 }
+.registerBtn,
+.LoginBtn {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 12px;
+  color: #fff;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+    font-size: 14px;
+    transition: all 0.4s ease-in-out;
+  }
+}
 .formBox {
   width: 18rem;
   height: 29rem;
-  margin-top: 150px;
+  margin-top: 140px;
+}
+.RegisterformBox {
+  width: 18rem;
+  height: 29rem;
+  margin-top: 90px;
 }
 .form {
   width: 100%;

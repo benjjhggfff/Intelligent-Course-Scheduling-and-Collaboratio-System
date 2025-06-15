@@ -1,10 +1,10 @@
-let BASE_URL = 'http://10.33.24.59:5050'
+let BASE_URL = 'http://115.29.241.234'
 if (import.meta.env.PROD) {
   // 生产环境
-  BASE_URL = 'http://10.33.24.59:5050'
+  BASE_URL = 'http://115.29.241.234'
 } else {
   // 开发环境
-  BASE_URL = 'http://10.33.24.59:5050'
+  BASE_URL = 'http://115.29.241.234'
 }
 
 // console.log(BASE_URL)
