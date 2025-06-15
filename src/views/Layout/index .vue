@@ -23,7 +23,7 @@ const handleMenuIconClick = (isFold) => {
           <SideMenu :isFold="isfold"></SideMenu>
         </el-aside>
         <el-container>
-          <el-header style="border-bottom: 1px solid #ccc">
+          <el-header style="border-bottom: 1px solid #ccc; background: #f6fafc">
             <PageHead @changeFold="handleMenuIconClick"></PageHead>
           </el-header>
           <el-main style="width: 100%">

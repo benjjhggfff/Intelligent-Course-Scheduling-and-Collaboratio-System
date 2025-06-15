@@ -1,6 +1,5 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
-
 import { useRouter } from 'vue-router'
 import {
   Document,
@@ -13,9 +12,7 @@ import {
 
 let isDark = ref(false)
 
-//监测isdark的变化
-
-//接收参数
+// 接收参数
 defineProps({
   isFold: {
     type: Boolean,
@@ -35,33 +32,46 @@ const handleItemClick = (path) => {
   router.push(path)
 }
 
-const sideMenu = ref([])
-sideMenu.value = [
+const sideMenu = ref([
   {
-    title: '系统总览',
+    title: '排课操作',
     icon: Monitor,
-
     children: [
-      {
-        title: '物质总览',
-        path: '/goods'
-      },
-      {
-        title: '领取记录',
-        path: '/orderRecord'
-      },
-      {
-        title: '库管理',
-        path: '/stock'
-      },
-
-      {
-        title: '粉丝会列表',
-        path: '/Fanlist'
-      }
+      { title: '自动排课', path: '/auto-schedule' },
+      { title: '手动排课', path: '/manual-schedule' }
+    ]
+  },
+  {
+    title: '资源管理',
+    icon: Document,
+    children: [
+      { title: '教室管理', path: '/classroom' },
+      { title: '教师管理', path: '/teacher' },
+      { title: '班级管理', path: '/class' },
+      { title: '课程管理', path: '/course' }
+    ]
+  },
+  {
+    title: '数据统计',
+    icon: Odometer,
+    children: [
+      { title: '排课统计', path: '/schedule-stat' },
+      { title: '教室使用统计', path: '/classroom-stat' },
+      { title: '教师使用统计', path: '/teacher-stat' },
+      { title: '班级使用统计', path: '/class-stat' },
+      { title: '课程使用统计', path: '/course-stat' }
+    ]
+  },
+  {
+    title: '用户管理',
+    icon: User,
+    children: [
+      { title: '用户列表', path: '/user-list' },
+      { title: '角色管理', path: '/role-management' },
+      { title: '权限管理', path: '/permission-management' }
     ]
   }
-]
+])
 </script>
 
 <template>
@@ -71,9 +81,43 @@ sideMenu.value = [
   >
     <div class="side-menu">
       <div class="logo">
-        <img src="../../images/eyesLogo.png" alt="" />
-        <h3 class="title" v-if="!isFold" style="margin-top: 20px">
-          智管有方学院智能辅助管理系统
+        <svg
+          t="1749997545966"
+          class="icon"
+          viewBox="0 0 1024 1024"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          p-id="3186"
+          width="64"
+          height="64"
+        >
+          <path
+            d="M515.04 508.42l-121.92-58.89 370.82-168.58 130.35 60.35z"
+            fill="#A2C8F2"
+            p-id="3187"
+          ></path>
+          <path
+            d="M515.04 512.42c-0.57 0-1.15-0.12-1.68-0.37L134.1 336.39c-1.42-0.66-2.32-2.08-2.32-3.64s0.92-2.98 2.34-3.63l146.93-66.8c2.01-0.91 4.38-0.02 5.3 1.99 0.91 2.01 0.02 4.38-1.99 5.3L145.37 332.8l369.71 171.24 369.45-162.8L506.6 168.58l-58.46 26.58c-2.01 0.92-4.38 0.03-5.3-1.99a4.004 4.004 0 0 1 1.99-5.3l60.12-27.33c1.06-0.48 2.27-0.48 3.32 0l387.69 177.12c1.43 0.65 2.35 2.09 2.34 3.67-0.01 1.58-0.95 3-2.39 3.63L516.65 512.08c-0.51 0.23-1.06 0.34-1.61 0.34z"
+            fill="#333333"
+            p-id="3188"
+          ></path>
+          <path
+            d="M362.43 233.73a3.99 3.99 0 0 1-3.64-2.35 4.012 4.012 0 0 1 1.99-5.3l9-4.09c2.01-0.91 4.38-0.02 5.3 1.99 0.91 2.01 0.02 4.38-1.99 5.3l-9 4.09c-0.54 0.24-1.1 0.36-1.66 0.36zM515.04 718.5c-0.59 0-1.19-0.13-1.73-0.39L134.05 535.88a4 4 0 0 1 3.47-7.21l377.56 181.41 377.55-172.9a3.998 3.998 0 0 1 3.33 7.27L516.7 718.14c-0.53 0.24-1.09 0.36-1.66 0.36z"
+            fill="#333333"
+            p-id="3189"
+          ></path>
+          <path
+            d="M515.04 874.05c-0.59 0-1.19-0.13-1.73-0.39L134.05 691.43a4 4 0 0 1 3.47-7.21l377.56 181.41 377.55-172.9a3.998 3.998 0 0 1 3.33 7.27L516.7 873.68c-0.53 0.24-1.09 0.37-1.66 0.37z"
+            fill="#333333"
+            p-id="3190"
+          ></path>
+        </svg>
+        <h3
+          class="title"
+          v-if="!isFold"
+          style="margin-top: 20px; margin-left: 50px"
+        >
+          智管有方
         </h3>
       </div>
     </div>
@@ -86,25 +130,26 @@ sideMenu.value = [
         @open="handleOpen"
         @close="handleClose"
       >
+        <!-- 优化：只需要一次循环渲染所有菜单 -->
         <el-sub-menu
-          :index="index"
           v-for="(item, index) in sideMenu"
           :key="index"
+          :index="index"
         >
           <template #title>
             <el-icon>
-              <component :is="item.icon"></component>
+              <component :is="item.icon" />
             </el-icon>
-
             <span>{{ item.title }}</span>
           </template>
           <el-menu-item
-            v-for="(item1, index1) in item.children"
-            :key="index1"
-            :index="item1.path"
-            @click="handleItemClick(item1.path)"
-            >{{ item.children[index1].title }}</el-menu-item
+            v-for="(child, childIndex) in item.children"
+            :key="childIndex"
+            :index="child.path"
+            @click="handleItemClick(child.path)"
           >
+            {{ child.title }}
+          </el-menu-item>
         </el-sub-menu>
       </el-menu>
     </div>
@@ -116,12 +161,7 @@ sideMenu.value = [
   width: 200px;
   min-height: 400px;
 }
-.el-menu-vertical-demo {
-  height: 92vh;
-}
-.el-menu-vertical-demo-dark {
-  height: 92vh;
-}
+
 .logo img {
   width: 24px;
   margin-left: 20px;
@@ -133,19 +173,18 @@ sideMenu.value = [
   height: 60px;
 }
 .side-menu .title {
-  font-size: 16px;
+  font-size: 27px;
   font-weight: 300;
   float: left;
   position: absolute;
   top: -10px;
   left: 20px;
-
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #6f70a8;
 }
 .meun-content {
   position: fixed;
   width: 200px;
+  background: #f6fafc;
 }
 
 .side-menu-light {

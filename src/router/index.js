@@ -11,7 +11,24 @@ const router = createRouter({
     {
       path: '/home',
       name: 'home',
-      component: () => import('../views/Layout/index .vue')
+      component: () => import('../views/Layout/index .vue'),
+      children: [
+        {
+          path: '/auto-schedule',
+          name: '自动排课',
+          component: () => import('../views/AutoDoCourse/index.vue')
+        },
+        {
+          path: '/manual-schedule',
+          name: '手动排课',
+          component: () => import('../views/handDoCourse/index.vue')
+        },
+        {
+          path: '/classroom',
+          name: '教室管理',
+          component: () => import('../views/classRoom/index.vue')
+        }
+      ]
     },
     {
       path: '/login',
