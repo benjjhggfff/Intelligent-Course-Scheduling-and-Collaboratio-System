@@ -1,5 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import * as echarts from 'echarts'
+
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
