@@ -142,6 +142,7 @@ import Massage from '@/utils/Massage'
   position: relative;
   width: 100%;
   height: 60px;
+  display: flex;
   top: 0;
   margin-left: -20px;
 }
