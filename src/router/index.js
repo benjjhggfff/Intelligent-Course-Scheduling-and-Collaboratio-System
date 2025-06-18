@@ -32,6 +32,11 @@ const router = createRouter({
           path: '/teacher',
           name: '教师管理',
           component: () => import('../views/Teachers/index.vue')
+        },
+        {
+          path: '/class',
+          name: '班级管理',
+          component: () => import('../views/Student/index.vue')
         }
       ]
     },
