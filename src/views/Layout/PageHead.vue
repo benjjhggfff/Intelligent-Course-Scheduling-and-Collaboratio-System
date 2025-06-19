@@ -4,7 +4,7 @@ import { ref, watch, onMounted } from 'vue'
 
 import { Setting, Bell } from '@element-plus/icons-vue'
 import { ArrowRight } from '@element-plus/icons-vue'
-import '@/assets/base.css'
+import '@/assets/css/base.css'
 
 import { useRoute, useRouter } from 'vue-router'
 

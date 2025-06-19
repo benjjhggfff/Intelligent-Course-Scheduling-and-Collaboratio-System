@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import '@/assets/base.css'
+import '@/assets/css/base.css'
 import SideMenu from './SideMenu.vue'
 import PageHead from './PageHead.vue'
 let isfold = ref(false)

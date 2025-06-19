@@ -3,7 +3,7 @@
     <div
       class="echart"
       ref="echartaRef"
-      :style="{ height: props.hight + 'px' }"
+      :style="{ height: props.height + 'px' }"
     ></div>
   </div>
 </template>
@@ -24,9 +24,9 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  hight: {
+  height: {
     type: Number,
-    default: 500
+    default: 300
   }
 })
 
@@ -41,8 +41,4 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss">
-.echart {
-  height: 500px;
-}
-</style>
+<style lang="scss"></style>
